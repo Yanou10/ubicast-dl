@@ -1,0 +1,3 @@
+# Le téléchargement ne dépend que de la bibliothèque standard + ffmpeg (externe).
+# faster-whisper n'est nécessaire que pour l'option --transcrire.
+faster-whisper>=1.0.0

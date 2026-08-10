@@ -1,0 +1,35 @@
+# Médias et transcriptions produits par l'outil
+*.mp4
+*.mp4.part
+*.mkv
+*.webm
+*.m4a
+*.mp3
+*.wav
+*.srt
+*.txt
+!requirements.txt
+
+# Dossiers de sortie par défaut
+videos/
+videos_oraux/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# Modèles Whisper mis en cache localement
+.cache/
+models/
+
+# Éditeurs / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

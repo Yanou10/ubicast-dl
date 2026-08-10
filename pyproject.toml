@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ubicast-dl"
+version = "1.0.0"
+description = "Télécharge et transcrit les vidéos hébergées sur une instance UbiCast/Nudgis."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+keywords = ["ubicast", "nudgis", "mediaserver", "hls", "whisper", "transcription"]
+classifiers = [
+    "Environment :: Console",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Multimedia :: Video",
+]
+# Le téléchargement n'utilise que la bibliothèque standard. ffmpeg est une
+# dépendance externe, à installer séparément.
+dependencies = []
+
+[project.optional-dependencies]
+transcription = ["faster-whisper>=1.0.0"]
+
+[project.scripts]
+ubicast-dl = "ubicast_dl.cli:main"
+
+[tool.setuptools]
+packages = ["ubicast_dl"]
