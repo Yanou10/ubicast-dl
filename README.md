@@ -1,10 +1,12 @@
 # ubicast-dl
 
-Télécharge et transcrit les vidéos hébergées sur une instance UbiCast / Nudgis.
+Downloads and transcribes videos hosted on a UbiCast / Nudgis instance.
 
-## Prérequis
+Lecture recordings on these platforms are streamed, not offered as files, and there is no public API. `ubicast-dl` reconstructs the endpoints from the player's own network traffic, reassembles the streams with FFmpeg, and optionally transcribes them with Whisper — turning a two-hour recording you have to scrub through into text you can search.
 
-Python ≥ 3.9 et ffmpeg dans le `PATH`.
+## Requirements
+
+Python ≥ 3.9 and `ffmpeg` on your `PATH`.
 
 ```bash
 winget install Gyan.FFmpeg     # Windows
@@ -12,42 +14,53 @@ brew install ffmpeg            # macOS
 sudo apt install ffmpeg        # Debian / Ubuntu
 ```
 
-## Installation
+## Install
 
 ```bash
-pip install .                    # téléchargement seul
-pip install ".[transcription]"   # + transcription Whisper
+pip install .                    # download only
+pip install ".[transcription]"   # + Whisper transcription
 ```
 
-Sans installation : `python -m ubicast_dl`.
+Without installing: `python -m ubicast_dl`.
 
-## Utilisation
+## Usage
 
+```bash
+ubicast-dl URL [URL...]        download
+ubicast-dl URL --transcrire    download, then transcribe
+ubicast-dl --page URL          discover the media on a page, then download
+ubicast-dl URL --lister        list without downloading
 ```
-ubicast-dl URL [URL...]        télécharge
-ubicast-dl URL --transcrire    télécharge puis transcrit
-ubicast-dl --page URL          découvre les médias d'une page, puis télécharge
-ubicast-dl URL --lister        liste sans télécharger
-```
 
-`URL` accepte un permalien, une URL `/videos/titre-oid/`, un embed iframe ou un
-lien `?oid=`. Autres entrées : `--oid OID --hote HOTE`, ou `--fichier urls.txt`
-(une URL par ligne).
+`URL` accepts a permalink, a `/videos/title-oid/` URL, an iframe embed, or an
+`?oid=` link. Other inputs: `--oid OID --hote HOST`, or `--fichier urls.txt`
+(one URL per line).
 
-| Option | Description | Défaut |
-| --- | --- | --- |
-| `--sortie`, `-o` | Dossier de sortie | `videos/` |
+| Option | Description | Default |
+|---|---|---|
+| `--sortie`, `-o` | Output directory | `videos/` |
 | `--qualite` | `max`, `720`, `480` | `max` |
-| `--transcrire` | Transcrit après téléchargement | — |
-| `--lister` | Liste sans télécharger | — |
-| `--modele` | Modèle Whisper : `tiny`, `base`, `small`, `medium`, `large-v3` | `small` |
-| `--langue` | Force la langue (`fr`, `en`, …) | auto |
-| `--srt` / `--sans-srt` | Écrit ou non les sous-titres `.srt` | `--srt` |
+| `--transcrire` | Transcribe after downloading | — |
+| `--lister` | List without downloading | — |
+| `--modele` | Whisper model: `tiny`, `base`, `small`, `medium`, `large-v3` | `small` |
+| `--langue` | Force the language (`fr`, `en`, …) | auto |
+| `--srt` / `--sans-srt` | Write `.srt` subtitles or not | `--srt` |
 | `--device` | `cpu`, `cuda`, `auto` | `cpu` |
 
-Les fichiers déjà téléchargés ou transcrits sont sautés : la commande est
-relançable après interruption.
+Files already downloaded or transcribed are skipped, so the command is safe to
+re-run after an interruption.
+
+> **Note.** Flag names are currently in French. They are kept as-is here so the
+> documentation matches the code; English aliases are on the roadmap.
+
+## How it finds the streams
+
+The player fetches its manifest through an undocumented endpoint. `ubicast-dl`
+resolves an `oid` from whichever URL form you give it, requests the manifest the
+same way the player does, picks the rendition matching `--qualite`, and hands the
+segment URLs to FFmpeg for reassembly. No browser automation and no scraping of
+rendered HTML — it speaks to the same endpoints the player does.
 
 ## Licence
 
-MIT — voir [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE).
